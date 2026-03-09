@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>રૂહાની ખાનકાહ પ્રોગ્રામ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;600;700&family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --emerald-deep: #011c14;
+            --emerald-mid: #042d1e;
+            --emerald-rich: #064e3b;
+            --emerald-glow: #065f46;
+            --gold-deep: #92680a;
+            --gold-mid: #b8860b;
+            --gold: #d4af37;
+            --gold-bright: #f0c040;
+            --gold-pale: #fef3c7;
+            --ivory: #fdfaf3;
+            --cream: #f5e6c8;
+            --text-muted: rgba(240,220,160,0.7);
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Noto Sans Gujarati', 'Cormorant Garamond', serif;
+            background-color: var(--emerald-deep);
+            color: var(--cream);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ===== ANIMATED STARFIELD BACKGROUND ===== */
+        .stars-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(6,78,59,0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(4,45,30,0.4) 0%, transparent 40%),
+                radial-gradient(ellipse at 60% 80%, rgba(6,95,70,0.2) 0%, transparent 40%),
+                linear-gradient(170deg, #000d09 0%, #011c14 40%, #02261a 100%);
+        }
+
+        .stars-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(1px 1px at 10% 15%, rgba(212,175,55,0.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 25% 40%, rgba(212,175,55,0.4) 0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 40% 8%, rgba(240,192,64,0.7) 0%, transparent 100%),
+                radial-gradient(1px 1px at 55% 65%, rgba(212,175,55,0.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 70% 30%, rgba(212,175,55,0.4) 0%, transparent 100%),
+                radial-gradient(2px 2px at 85% 55%, rgba(240,192,64,0.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 92% 12%, rgba(212,175,55,0.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 5% 75%, rgba(212,175,55,0.4) 0%, transparent 100%),
+                radial-gradient(1.5px 1.5px at 78% 82%, rgba(240,192,64,0.5) 0%, transparent 100%),
+                radial-gradient(1px 1px at 35% 90%, rgba(212,175,55,0.3) 0%, transparent 100%),
+                radial-gradient(1px 1px at 62% 45%, rgba(212,175,55,0.4) 0%, transparent 100%),
+                radial-gradient(1px 1px at 18% 58%, rgba(240,192,64,0.5) 0%, transparent 100%),
+                radial-gradient(2px 2px at 48% 28%, rgba(212,175,55,0.6) 0%, transparent 100%),
+                radial-gradient(1px 1px at 90% 70%, rgba(212,175,55,0.3) 0%, transparent 100%);
+            animation: twinkle 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        /* ===== GEOMETRIC ISLAMIC PATTERN OVERLAY ===== */
+        .pattern-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            opacity: 0.04;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cg fill='none' stroke='%23d4af37' stroke-width='0.8'%3E%3Cpolygon points='40,2 78,20 78,60 40,78 2,60 2,20'/%3E%3Cpolygon points='40,12 68,26 68,54 40,68 12,54 12,26'/%3E%3Cline x1='40' y1='2' x2='40' y2='78'/%3E%3Cline x1='2' y1='40' x2='78' y2='40'/%3E%3Cline x1='14' y1='14' x2='66' y2='66'/%3E%3Cline x1='66' y1='14' x2='14' y2='66'/%3E%3Ccircle cx='40' cy='40' r='12'/%3E%3Ccircle cx='40' cy='40' r='6'/%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        /* ===== MAIN WRAPPER ===== */
+        .wrapper {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px 16px 60px;
+        }
+
+        /* ===== FLOATING ORNAMENTAL DIVIDER ===== */
+        .ornament {
+            text-align: center;
+            color: var(--gold);
+            font-size: 1.4rem;
+            letter-spacing: 0.4em;
+            margin: 16px 0;
+            opacity: 0.8;
+            animation: fadeInDown 1s ease both;
+        }
+
+        .ornament-line {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 10px 0;
+        }
+
+        .ornament-line::before,
+        .ornament-line::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        /* ===== HEADER / ARCH GATE ===== */
+        .arch-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            padding: 50px 0 30px;
+            animation: fadeIn 1.2s ease both;
+        }
+
+        .arch-outer {
+            position: relative;
+            width: 100%;
+            max-width: 780px;
+        }
+
+        /* SVG Arch Frame */
+        .arch-svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .arch-content {
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(160deg, rgba(6,78,59,0.95) 0%, rgba(4,45,30,0.98) 100%);
+            border: 2px solid rgba(212,175,55,0.5);
+            border-radius: 46% 46% 8px 8px / 30% 30% 8px 8px;
+            padding: 70px 50px 50px;
+            text-align: center;
+            box-shadow:
+                0 0 60px rgba(212,175,55,0.1),
+                0 0 120px rgba(0,0,0,0.8),
+                inset 0 0 40px rgba(0,0,0,0.4);
+        }
+
+        .arch-content::before {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border: 1px solid rgba(212,175,55,0.25);
+            border-radius: 44% 44% 6px 6px / 28% 28% 6px 6px;
+            pointer-events: none;
+        }
+
+        /* Corner rosettes */
+        .arch-content::after {
+            content: '✦';
+            position: absolute;
+            top: 22px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.6rem;
+            color: var(--gold-bright);
+            animation: spin 10s linear infinite;
+        }
+
+        @keyframes spin { to { transform: translateX(-50%) rotate(360deg); } }
+
+        /* ===== CRESCENT MOON DECORATION ===== */
+        .crescent-decor {
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3rem;
+            filter: drop-shadow(0 0 12px rgba(212,175,55,0.8));
+            z-index: 10;
+            animation: glow-pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glow-pulse {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(212,175,55,0.7)); }
+            50% { filter: drop-shadow(0 0 22px rgba(240,192,64,1)); }
+        }
+
+        .bismillah {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(1.3rem, 4vw, 1.9rem);
+            color: var(--gold-bright);
+            display: block;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(212,175,55,0.5);
+            letter-spacing: 0.06em;
+            line-height: 1.8;
+            animation: fadeIn 2s ease both 0.5s;
+        }
+
+        .header-title {
+            font-family: 'Noto Sans Gujarati', sans-serif;
+            font-size: clamp(1.6rem, 5vw, 2.8rem);
+            font-weight: 700;
+            color: var(--ivory);
+            line-height: 1.4;
+            margin: 16px 0 24px;
+            text-shadow: 0 2px 20px rgba(0,0,0,0.7);
+            animation: fadeInUp 1.5s ease both 0.3s;
+        }
+
+        .header-title em {
+            color: var(--gold-bright);
+            font-style: normal;
+        }
+
+        .date-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 32px;
+            border: 1px solid var(--gold);
+            border-radius: 50px;
+            color: var(--gold-pale);
+            font-size: 1.15rem;
+            font-weight: 600;
+            background: rgba(212,175,55,0.08);
+            letter-spacing: 0.05em;
+            animation: fadeIn 2s ease both 0.8s;
+            box-shadow: 0 0 20px rgba(212,175,55,0.15);
+        }
+
+        .date-badge::before,
+        .date-badge::after { content: '❖'; color: var(--gold); font-size: 0.8rem; }
+
+        /* ===== SECTION LABEL ===== */
+        .section-title {
+            text-align: center;
+            margin: 50px 0 30px;
+            animation: fadeInUp 1s ease both;
+        }
+
+        .section-title h2 {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: clamp(0.85rem, 2.5vw, 1.1rem);
+            color: var(--gold);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        /* ===== MAJLIS CARDS ===== */
+        .cards-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .majlis-card {
+            position: relative;
+            background: linear-gradient(135deg,
+                rgba(6,78,59,0.6) 0%,
+                rgba(4,45,30,0.8) 50%,
+                rgba(2,28,20,0.9) 100%
+            );
+            border: 1px solid rgba(212,175,55,0.2);
+            border-radius: 16px;
+            padding: 30px 36px;
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 20px 28px;
+            align-items: start;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: default;
+            animation: fadeInUp 0.7s ease both;
+        }
+
+        .majlis-card:nth-child(1) { animation-delay: 0.1s; }
+        .majlis-card:nth-child(2) { animation-delay: 0.2s; }
+        .majlis-card:nth-child(3) { animation-delay: 0.3s; }
+        .majlis-card:nth-child(4) { animation-delay: 0.4s; }
+        .majlis-card:nth-child(5) { animation-delay: 0.5s; }
+        .majlis-card:nth-child(6) { animation-delay: 0.6s; }
+
+        /* Hover golden shimmer */
+        .majlis-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(212,175,55,0.06) 0%, transparent 60%);
+            opacity: 0;
+            transition: opacity 0.4s;
+            border-radius: 16px;
+        }
+
+        .majlis-card:hover::before { opacity: 1; }
+
+        /* Left shimmer accent bar */
+        .majlis-card::after {
+            content: '';
+            position: absolute;
+            left: 0; top: 20%; bottom: 20%;
+            width: 3px;
+            background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+            border-radius: 2px;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .majlis-card:hover::after { opacity: 1; }
+
+        .majlis-card:hover {
+            border-color: rgba(212,175,55,0.55);
+            transform: translateY(-4px);
+            box-shadow:
+                0 20px 60px rgba(0,0,0,0.5),
+                0 0 30px rgba(212,175,55,0.07);
+        }
+
+        /* Number badge */
+        .card-number {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(212,175,55,0.08);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .card-number::before {
+            content: '';
+            position: absolute;
+            inset: 3px;
+            border-radius: 50%;
+            border: 1px solid rgba(212,175,55,0.3);
+        }
+
+        .card-number-text {
+            font-family: 'Cinzel Decorative', serif;
+            font-size: 0.6rem;
+            color: var(--gold);
+            letter-spacing: 0.1em;
+            line-height: 1;
+        }
+
+        .card-number-digit {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gold-bright);
+            line-height: 1.1;
+        }
+
+        .card-body { min-width: 0; }
+
+        .majlis-title {
+            font-size: clamp(1.2rem, 3.5vw, 1.55rem);
+            color: var(--gold-bright);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 4px;
+            text-shadow: 0 0 12px rgba(212,175,55,0.3);
+        }
+
+        .majlis-time {
+            font-family: 'Cormorant Garamond', serif;
+            color: rgba(212,175,55,0.8);
+            font-size: 1rem;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .majlis-time::before {
+            content: '';
+            width: 18px;
+            height: 1px;
+            background: var(--gold);
+            opacity: 0.5;
+            display: inline-block;
+        }
+
+        .description {
+            color: rgba(240,220,170,0.82);
+            font-size: clamp(0.9rem, 2.5vw, 1.05rem);
+            line-height: 1.75;
+            font-weight: 400;
+        }
+
+        /* ===== BOTTOM DECORATIVE PANEL ===== */
+        .footer-panel {
+            margin-top: 60px;
+            text-align: center;
+            padding: 40px 30px;
+            background: linear-gradient(135deg, rgba(6,78,59,0.4), rgba(4,45,30,0.6));
+            border: 1px solid rgba(212,175,55,0.25);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(212,175,55,0.03) 60deg, transparent 120deg);
+            animation: rotate-slow 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotate-slow { to { transform: rotate(360deg); } }
+
+        .footer-icon {
+            font-size: 2.4rem;
+            display: block;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 0 10px rgba(212,175,55,0.6));
+        }
+
+        .footer-text {
+            font-size: clamp(1.1rem, 3vw, 1.4rem);
+            color: var(--gold-pale);
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-dua {
+            margin-top: 20px;
+            color: var(--text-muted);
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.05rem;
+            font-style: italic;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--emerald-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--gold-mid); border-radius: 4px; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 560px) {
+            .arch-content { padding: 60px 24px 40px; }
+            .majlis-card { grid-template-columns: 1fr; }
+            .card-number { width: 48px; height: 48px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="stars-bg"></div>
+<div class="pattern-overlay"></div>
+
+<div class="wrapper">
+
+    <!-- ===== HEADER ARCH ===== -->
+    <div class="arch-wrapper">
+        <div class="arch-outer">
+            <div class="crescent-decor">☪</div>
+            <div class="arch-content">
+                <span class="bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</span>
+
+                <div class="ornament-line">
+                    <span>✦ ✦ ✦</span>
+                </div>
+
+                <h1 class="header-title">
+                    <em>એક દિવસીય</em> રૂહાની<br>તરબિયતી પ્રોગ્રામ
+                </h1>
+
+                <div class="date-badge">
+                    ૧૭ માર્ચ ૨૦૨૬
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SECTION TITLE ===== -->
+    <div class="section-title">
+        <div class="ornament-line">
+            <h2>Majlis Schedule · મજલિસ કાર્યક્રમ</h2>
+        </div>
+    </div>
+
+    <!-- ===== PROGRAM CARDS ===== -->
+    <div class="cards-grid">
+
+        <div class="majlis-card">
+            <div class="card-number">
+                <span class="card-number-text">MAJLIS</span>
+                <span class="card-number-digit">1</span>
+            </div>
+            <div class="card-body">
+                <span class="majlis-title">મજલિસ ૧ — પ્રારંભ</span>
+                <span class="majlis-time">બપોરે ૦૧ : ૩૦ વાગ્યે</span>
+                <p class="description">ઝોહર કી નમાજ કે બાદ ખાનકાહી નિઝામ કી ફઝીલત ઓર તરતીબ, સહી અઝાન કી પ્રેકટીસ , તરતીબ ફાયદે.<br>(નોટ : અઝાન દેનેવાલે ઓર અઝાન શિખાનેવાલે સાથીઓકી મજલીશ મેં સિરકત જરૂરી હૈ)</p>
+            </div>
+        </div>
+
+        <div class="majlis-card">
+            <div class="card-number">
+                <span class="card-number-text">MAJLIS</span>
+                <span class="card-number-digit">2</span>
+            </div>
+            <div class="card-body">
+                <span class="majlis-title">મજલિસ ૨ — ઝીક્ર</span>
+                <span class="majlis-time">સાંજે  ૦૫ : ૩૦ વાગ્યે</span>
+                <p class="description">અસર કી નમાજ કે બાદ સુન્નત કે મુતાબિક વુઝુ બતાયા જાયેગા ઔર ઝીકર કી ફઝીલત બતાયેંગે. </p>
+            </div>
+        </div>
+
+        <div class="majlis-card">
+            <div class="card-number">
+                <span class="card-number-text">MAJLIS</span>
+                <span class="card-number-digit">3</span>
+            </div>
+            <div class="card-body">
+                <span class="majlis-title">મજલિસ ૩ — તરાવીહ</span>
+                <span class="majlis-time">રાત્રે ૦૮ : ૩૦ વાગ્યે</span>
+                <p class="description">ઈશા કી નમાજ બાદ કે સુન્નત કે મુતાબિક તરાવીહ ખત્મે કુરઆન શરીફ, શબ-એ-ક઼દ્ર કી ફઝીલત, નસીહત ઔર દુઆ.</p>
+            </div>
+        </div>
+
+        <div class="majlis-card">
+            <div class="card-number">
+                <span class="card-number-text">MAJLIS</span>
+                <span class="card-number-digit">4</span>
+            </div>
+            <div class="card-body">
+                <span class="majlis-title">મજલિસ ૪ — ફજ્ર</span>
+                <span class="majlis-time">વહેલી સવારે ૦૬ : ૦૦ વાગ્યે</span>
+                <p class="description">ફજર બાદ સુન્નત કે મુતાબીક ઇકામત, નમાઝ કી પ્રેક્ટિસ, ઇશરાક  કી તરતીબ  ઔર ફઝીલત.</p>
+            </div>
+        </div>
+
+        <div class="majlis-card">
+            <div class="card-number">
+                <span class="card-number-text">MAJLIS</span>
+                <span class="card-number-digit">5</span>
+            </div>
+            <div class="card-body">
+                <span class="majlis-title">મજલિસ ૫ — ખ઼ત્મ</span>
+                <span class="majlis-time">સવારે ૧૦ : ૦૦ વાગ્યે</span>
+                <p class="description">શુબ્હ બૈત હોને કે ફાયદે. કૈસે તઅલ્લુક રખે ઉનવાન પર બાત હોગી ઔર ખાનકાહી મજલીશ ખતમ હોગી.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="footer-panel">
+        <span class="footer-icon">🕌</span>
+        <div class="ornament-line" style="margin-bottom:16px">
+            <span style="color:var(--gold); font-size:0.9rem; letter-spacing:0.2em">✦ ✦ ✦</span>
+        </div>
+        <p class="footer-text">તમામ ભાઈઓને સમયસર પધારવા વિનંતી</p>
+        <p class="footer-dua">جزاك الله خيرا — અલ્લાહ આપણને તૌફ઼ીક અતા ફરમાએ. આમીન.</p>
+    </div>
+
+</div>
+
+</body>
+</html>
